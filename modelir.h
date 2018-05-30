@@ -76,6 +76,7 @@ __published:	// IDE-managed Components
         TLabel *Label31;
         TLabel *Label13;
         TLabel *Label32;
+        TMemo *txtLogInfo;
         void __fastcall Button1Click(TObject *Sender);
         void __fastcall Button2Click(TObject *Sender);
         void __fastcall CheckBox1Click(TObject *Sender);

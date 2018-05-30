@@ -482,6 +482,15 @@ object Form1: TForm1
     Caption = 'CheckBox9'
     TabOrder = 30
   end
+  object txtLogInfo: TMemo
+    Left = 80
+    Top = 400
+    Width = 513
+    Height = 81
+    Lines.Strings = (
+      'txtLogInfo')
+    TabOrder = 31
+  end
   object OpenDialog1: TOpenDialog
     Left = 680
     Top = 24

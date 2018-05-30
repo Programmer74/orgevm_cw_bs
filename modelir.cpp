@@ -667,6 +667,10 @@ void __fastcall TForm1::Button1Click(TObject *Sender) { //функция клавиши  Сброс
   ADC[0xb7] = 6; // xchd a, @ri
   ADC[0x12] = 7; // lcall ad16
   ADC[0x32] = 8; // reti
+  //=========
+  ADC[0x24] = 9; // add A, #??
+  ADC[0x26] = 10; //add A, @R0
+  ADC[0x27] = 11; //add A, @R1
 
   //сброс микропрограммной памяти и декодеров
   //---------------------------------------------
@@ -1023,7 +1027,9 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
     break;
   default:
     {
-        Edit3->Text = "weirdo";
+        char buf2[64];
+        sprintf(buf2, "dude, wtf? ive got 0x%x, is that ok?", ADC[IR]);
+        txtLogInfo->Text = buf2;
     }
   } // switch
 }
@@ -1428,3 +1434,4 @@ void __fastcall TForm1::Edit2DblClick(TObject *Sender) { //текстовое поле P3
   Edit2->Text = &qq[0];
 }
 //---------------------------------------------------------------------------
+
