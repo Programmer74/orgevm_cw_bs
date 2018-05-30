@@ -193,6 +193,7 @@ object Form1: TForm1
     Width = 129
     Height = 13
     Caption = ' '#1054#1096#1080#1073#1082#1072'  '#1084#1080#1082#1088#1086#1086#1087#1077#1088#1072#1094#1080#1080
+    Visible = False
   end
   object Label2: TLabel
     Left = 127

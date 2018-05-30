@@ -781,7 +781,7 @@ void __fastcall TForm1::Button1Click(TObject *Sender) { //функция клавиши  Сброс
 //Функция клавиши ВЫПОЛНИТЬ - исполнение тест-программы
 //ИНАЧЕ ГОВОРЯ, ЭМУЛЯТОР ВНУТРИ ЗДЕСЬ
 void __fastcall TForm1::Button2Click(TObject *Sender) {
-    Edit3->Text = "";
+    //Edit3->Text = "";
   // 0.0 mk
   GoToInt(); //схема регистрации запросов прерываний - запросы в ОКНЕ
   MicroCodMem("Unicontr=Eintra, Unicontr=Wrtcon ");
@@ -825,7 +825,7 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
 
   char buf[64];
   sprintf(buf, "IR=0x%x, ADC[IR]=0x%x", IR, ADC[IR]);
-  Edit3->Text = buf;
+  txtLogInfo->Text = buf;
 
   switch (ADC[IR]) //декодирование команды
   {
@@ -912,7 +912,10 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
 
   case 9: //add a, immediate
     {
-      Instr->Text = "add A, #d";
+      int imm = CODE[PC];
+      char addbuf[16];
+      sprintf(addbuf, "add A, #%xh", imm);
+      Instr->Text = addbuf;
       PC++;
     }
        goto finish;
@@ -930,7 +933,10 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
        goto finish;
   case 12://mov R0, #d
     {
-      Instr->Text = "mov R0, #d";
+      int imm = CODE[PC];
+      char movbuf[16];
+      sprintf(movbuf, "mov R0, #%xh", imm);
+      Instr->Text = movbuf;
       PC++;
     }
        goto finish;
@@ -947,7 +953,15 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
        goto finish;
   case 15://ajmp adr11
     {
-      Instr->Text = "ajmp adr11";
+      int imm = ((IR >> 5) << 8) | CODE[PC];
+      char ajmpbuf[16];
+      sprintf(ajmpbuf, "ajmp #%xh", imm);
+
+      char buf2[64];
+      sprintf(buf2, "ir = 0x%x, code[pc] = 0x%x", IR, CODE[PC]);
+      txtLogInfo->Text = buf2;
+
+      Instr->Text = ajmpbuf;
       PC++;
     }
        goto finish;
