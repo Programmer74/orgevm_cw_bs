@@ -694,31 +694,52 @@ void __fastcall TForm1::Button1Click(TObject *Sender) { //функция клавиши  Сброс
 
   //=============================== программный код теста
 
+  /*
+    LOC  OBJ            LINE     SOURCE
+    ----                   1     Cseg at 0h;
+    0000 020006            2             ljmp _start
+    0003 6100              3             var: db "a", 0
+                           4
+    0005                   5     _stuff:
+    0005 32                6             reti
+                           7
+    0006                   8     _start:
+    0006 2403              9             add A, #03h
+    0008 7803             10             mov R0, #var
+    000A 26               11             add A, @R0
+    000B 33               12             rlc A
+    000C C0E0             13             push ACC
+    000E 120005           14             lcall _stuff
+    0011 0113             15             ajmp _end
+    0013                  16     _end:
+    0013 020013           17             ljmp _end ; while (1) {}
+                          18             end
+  */
+
   // if(CheckBox8->State==cbUnchecked)
   {
     for (i = 0; i < 100; i++)
       CODE[i] = 0; //сброс программной памяти
 
+    //CODE                MNEMONICS                                 CORRECTNES
     CODE[0x00] = 0x02;
     CODE[0x01] = 0;
-    CODE[0x02] = 0x23; // ljmp 23
+    CODE[0x02] = 0x06; // ljmp _start (ljmp at 0x06)                +
 
-    CODE[0x03] = 0; // Nop interrupt ex0
-    CODE[0x04] = 0x32; // reti
-    CODE[0x13] = 0; // Nop interrupt ex1
-    CODE[0x14] = 0x32; // reti
+    CODE[0x05] = 0x32; // _stuff: reti                              +
 
-    CODE[0x23] = 0x09; // inc r1 (0000 1001)
-    CODE[0x24] = 0x05;
-    CODE[0x25] = 0x01; // inc ad
-    CODE[0x26] = 0xa3; // inc dptr
-    CODE[0x27] = 0xf4; // cpl a
-    CODE[0x28] = 0xb7; // xchd a, @r1 (1101 0111)
-    CODE[0x29] = 0x12;
-    CODE[0x2a] = 0x00;
-    CODE[0x2b] = 0x2f; // lcall 0x2f
-    CODE[0x2f] = 0x32; // reti 0
-    CODE[0x2c] = 0; // the end
+    CODE[0x06] = 0x24; // _start: add A,                            -
+    CODE[0x07] = 0x03; //               #03h
+    CODE[0x08] = 0x78; //         mov R0,                           -
+    CODE[0x09] = 0x03; //               #var (which is at 0x03)
+    CODE[0x0A] = 0x26; //         add A, @R0                        -
+    CODE[0x0B] = 0x33; //         rlc A                             -
+    CODE[0x0C] = 0xC0; //         push                              -
+    CODE[0x0D] = 0xE0; //               ACC
+    CODE[0x0E] = 0x12; //         lcall                             +
+    CODE[0x0F] = 0x00; //               _st
+    CODE[0x10] = 0x05; //                  uff (which is at 05)
+    CODE[0x11] = 0;    // THIS IS THE END INSTEAD OF WHILE (1) {}   +
   }
 
   Instr->Clear();
@@ -749,7 +770,7 @@ void __fastcall TForm1::Button1Click(TObject *Sender) { //функция клавиши  Сброс
 //Функция клавиши ВЫПОЛНИТЬ - исполнение тест-программы
 //ИНАЧЕ ГОВОРЯ, ЭМУЛЯТОР ВНУТРИ ЗДЕСЬ
 void __fastcall TForm1::Button2Click(TObject *Sender) {
-    Edit3->Text = "тобi пiзда";
+    Edit3->Text = "";
   // 0.0 mk
   GoToInt(); //схема регистрации запросов прерываний - запросы в ОКНЕ
   MicroCodMem("Unicontr=Eintra, Unicontr=Wrtcon ");
@@ -994,6 +1015,11 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
       Instr->Text = "конец программы";
       PC--;
       CheckBox7->State == cbUnchecked;
+    }
+    break;
+  default:
+    {
+        Edit3->Text = "weirdo";
     }
   } // switch
 }
