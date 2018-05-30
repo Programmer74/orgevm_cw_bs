@@ -668,9 +668,14 @@ void __fastcall TForm1::Button1Click(TObject *Sender) { //функция клавиши  Сброс
   ADC[0x12] = 7; // lcall ad16
   ADC[0x32] = 8; // reti
   //=========
-  ADC[0x24] = 9; // add A, #??
+  ADC[0x24] = 9; // add A, #d
   ADC[0x26] = 10; //add A, @R0
   ADC[0x27] = 11; //add A, @R1
+  //------
+  ADC[0x78] = 12; //mov R0, #d
+  ADC[0x33] = 13; //rlc
+  ADC[0xC0] = 14; //push a
+  ADC[0x01] = 15; //ajmp adr11
 
   //сброс микропрограммной памяти и декодеров
   //---------------------------------------------
@@ -743,7 +748,9 @@ void __fastcall TForm1::Button1Click(TObject *Sender) { //функция клавиши  Сброс
     CODE[0x0E] = 0x12; //         lcall                             +
     CODE[0x0F] = 0x00; //               _st
     CODE[0x10] = 0x05; //                  uff (which is at 05)
-    CODE[0x11] = 0;    // THIS IS THE END INSTEAD OF WHILE (1) {}   +
+    CODE[0x11] = 0x01; //         ajmp                              -
+    CODE[0x12] = 0x13; //               _end (which is 0x13)
+    CODE[0x13] = 0;    // THIS IS THE END
   }
 
   Instr->Clear();
@@ -902,6 +909,48 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
     Edit15->Text = DPTR;
   }
     goto finish;
+
+  case 9: //add a, immediate
+    {
+      Instr->Text = "add A, #d";
+      PC++;
+    }
+       goto finish;
+  case 10://add a, @r0
+    {
+      Instr->Text = "add A, @R0";
+      PC++;
+    }
+       goto finish;
+  case 11://add a, @r1
+    {
+      Instr->Text = "add A, @R1";
+      PC++;
+    }
+       goto finish;
+  case 12://mov R0, #d
+    {
+      Instr->Text = "mov R0, #d";
+      PC++;
+    }
+       goto finish;
+  case 13://rlc
+    {
+      Instr->Text = "rlc";
+    }
+       goto finish;
+  case 14://push a
+    {
+      Instr->Text = "push a";
+      PC++;
+    }
+       goto finish;
+  case 15://ajmp adr11
+    {
+      Instr->Text = "ajmp adr11";
+      PC++;
+    }
+       goto finish;
   case 5: // cpl a
   {
     ACC = ~ACC & 0xffff, Ram[Acc] = ACC;
