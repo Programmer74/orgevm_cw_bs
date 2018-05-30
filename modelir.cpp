@@ -692,7 +692,7 @@ void __fastcall TForm1::Button1Click(TObject *Sender) { //функци€ клавиши  —брос
   }
   Ram[0] = 0x11; //значение R0
   Ram[1] = 0x01; //значение R1
-  Ram[Acc] = ACC = 0x82;
+  Ram[Acc] = ACC = 0x0;//82;
   Ram[Psw] = PSW = 0x80;
   Ram[Tcon] = TCON = 0;
   P0 = P1 = P2 = P3 = 0xff; //начальное состо€ние портов
@@ -917,18 +917,29 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
       sprintf(addbuf, "add A, #%xh", imm);
       Instr->Text = addbuf;
       PC++;
+      //----
+      ACC = ACC + imm;
+      Ram[Acc] = ACC;
+
     }
        goto finish;
   case 10://add a, @r0
     {
       Instr->Text = "add A, @R0";
-      PC++;
+      char buf2[16];
+      sprintf(buf2, "add a, @r0 r0=0x%x, (r0)=0x%x", Ram[0], Ram[Ram[0]]);
+      txtLogInfo->Text = buf2;
+      //---
+      ACC = ACC + Ram[Ram[0]];
+      Ram[Acc] = ACC;
     }
        goto finish;
   case 11://add a, @r1
     {
       Instr->Text = "add A, @R1";
-      PC++;
+      //---
+      ACC = ACC + Ram[1];
+      Ram[Acc] = ACC;
     }
        goto finish;
   case 12://mov R0, #d
@@ -938,11 +949,16 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
       sprintf(movbuf, "mov R0, #%xh", imm);
       Instr->Text = movbuf;
       PC++;
+      //---
+      Ram[0] = imm;
     }
        goto finish;
   case 13://rlc
     {
       Instr->Text = "rlc";
+      //----
+      ACC = ACC << 1;
+      Ram[Acc] = ACC;
     }
        goto finish;
   case 14://push a
@@ -962,7 +978,7 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
       txtLogInfo->Text = buf2;
 
       Instr->Text = ajmpbuf;
-      PC++;
+      PC = imm;
     }
        goto finish;
   case 5: // cpl a
