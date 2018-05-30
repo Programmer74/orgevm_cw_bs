@@ -965,6 +965,12 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
     {
       Instr->Text = "push a";
       PC++;
+      //---
+      SP++;
+      Ram[SP] = Ram[Acc];
+      char buf2[64];
+      sprintf(buf2, "sp = 0x%x, ram[sp] = 0x%x", SP, Ram[SP]);
+      txtLogInfo->Text = buf2;
     }
        goto finish;
   case 15://ajmp adr11
@@ -1431,7 +1437,7 @@ void __fastcall TForm1::CheckBox6Click(TObject *Sender) { //галка запроса IE1
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button10Click(TObject *Sender) { //запрос прерывания по H/L фронтуINT0 при IT0=1
-  
+
   IE0 = 1;
   TCON = TCON | 0x2;
   Ram[Tcon] = TCON;
