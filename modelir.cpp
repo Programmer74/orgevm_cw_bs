@@ -918,7 +918,12 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
       Instr->Text = addbuf;
       PC++;
       //----
-      ACC = ACC + imm;
+
+      PA = ACC;
+      PB = imm;
+      PSWC("add  ");
+
+      ACC = PA + PB;
       Ram[Acc] = ACC;
 
     }
@@ -930,15 +935,12 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
       sprintf(buf2, "add a, @r0 r0=0x%x, (r0)=0x%x", Ram[0], Ram[Ram[0]]);
       txtLogInfo->Text = buf2;
       //---
-      ACC = ACC + Ram[Ram[0]];
-      Ram[Acc] = ACC;
-    }
-       goto finish;
-  case 11://add a, @r1
-    {
-      Instr->Text = "add A, @R1";
-      //---
-      ACC = ACC + Ram[1];
+
+      PA = ACC;
+      PB = Ram[Ram[0]];
+      PSWC("add  ");
+
+      ACC = PA + PB;
       Ram[Acc] = ACC;
     }
        goto finish;
