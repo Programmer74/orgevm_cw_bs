@@ -812,6 +812,10 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
     MicroCodMem("SelbusB=Code,Unicontr =Wrir,Unicod16=Incpc ");
   }
 
+  char buf[64];
+  sprintf(buf, "IR=0x%x, ADC[IR]=0x%x", IR, ADC[IR]);
+  Edit3->Text = buf;
+
   switch (ADC[IR]) //декодирование команды
   {
   case 0: // Nop
